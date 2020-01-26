@@ -1,4 +1,12 @@
 const MILLIS = 3600000;
+const MESHWIDTH = [];
+MESHWIDTH[1] = MILLIS;
+MESHWIDTH[2] = MESHWIDTH[1] / 8;
+MESHWIDTH[3] = MESHWIDTH[2] / 10;
+const MESHHEIGHT= [];
+MESHHEIGHT[1] = MILLIS * (40 / 60);
+MESHHEIGHT[2] = MESHHEIGHT[1] / 8;
+MESHHEIGHT[3] = MESHHEIGHT[2] / 10;
 
 L.JISX0410Mesh = L.LayerGroup.extend({
     options: {
@@ -55,20 +63,14 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         }
         var zoom = this._map.getZoom();
         // 1次メッシュ
-        this._meshLevel = 1;
-        this._meshWidthMs = MILLIS;
-        this._meshHeightMs = MILLIS * (40 / 60);
         if (zoom < 10) {
+            this._meshLevel = 1;
         } else if (zoom < 14) {
             // 2次メッシュ
             this._meshLevel = 2;
-            this._meshWidthMs = this._meshWidthMs / 8;
-            this._meshHeightMs = this._meshHeightMs / 8;
         } else {
             // 3次メッシュ
             this._meshLevel = 3;
-            this._meshWidthMs = this._meshWidthMs / 8 / 10;
-            this._meshHeightMs = this._meshHeightMs / 8 / 10;
         }
         this.constructLines(this._bounds);
         return this;
@@ -77,8 +79,8 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     getMins: function() {
         // rounds up to nearest multiple of x
         var sw = this._bounds.getSouthWest();
-        var w = this._meshWidthMs;
-        var h = this._meshHeightMs;
+        var w = MESHWIDTH[this._meshLevel];
+        var h = MESHHEIGHT[this._meshLevel];
         return {
             x: Math.floor(sw.lng * MILLIS / w) * w,
             y: Math.floor(sw.lat * MILLIS / h) * h
@@ -99,7 +101,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         var lng = x / MILLIS;
         var line = L.polyline([[bottom, lng], [top, lng]], this.lineStyle);
         lines.push(line);
-        x += this._meshWidthMs;
+        x += MESHWIDTH[this._meshLevel];
       } while (x < ne.lng * MILLIS);
 
       // for horizontal lines
@@ -110,7 +112,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         var lat = y / MILLIS;
         var line = L.polyline([[lat, left], [lat, right]], this.lineStyle);
         lines.push(line);
-        y += this._meshHeightMs;
+        y += MESHHEIGHT[this._meshLevel];
       } while (y < ne.lat * MILLIS);
 
       var labels = this.buildMeshLabels(mins);
@@ -137,9 +139,9 @@ L.JISX0410Mesh = L.LayerGroup.extend({
           }
           var label = this.buildMeshLabel([lat, lng], mesh.code);
           labels.push(label)
-          y += this._meshHeightMs;
+          y += MESHHEIGHT[this._meshLevel];
         } while (y < ne.lat * MILLIS);
-        x += this._meshWidthMs;
+        x += MESHWIDTH[this._meshLevel];
       } while (x < ne.lng * MILLIS);
       return labels;
     }, 
@@ -154,11 +156,11 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     },
 
     meshcode2: function (lat, lng, mesh1) {
-      let r = Math.floor((lat * MILLIS - mesh1.latms) / this._meshHeightMs);
-      let c = Math.floor((lng * MILLIS - mesh1.lngms) / this._meshWidthMs);
+      let r = Math.floor((lat * MILLIS - mesh1.latms) / MESHHEIGHT[this._meshLevel]);
+      let c = Math.floor((lng * MILLIS - mesh1.lngms) / MESHWIDTH[this._meshLevel]);
       let code = mesh1.code + String(r) + String(c);
-      let latms = mesh1.latms + (r * this._meshHeightMs);
-      let lngms = mesh1.lngms + (c * this._meshWidthMs);
+      let latms = mesh1.latms + (r * MESHHEIGHT[this._meshLevel]);
+      let lngms = mesh1.lngms + (c * MESHWIDTH[this._meshLevel]);
       return {code: code, latms: latms, lngms: lngms};
     },
 
