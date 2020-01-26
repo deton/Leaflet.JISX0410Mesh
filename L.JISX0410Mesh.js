@@ -55,15 +55,18 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         }
         var zoom = this._map.getZoom();
         // 1次メッシュ
+        this._meshLevel = 1;
         this._meshWidthMs = MILLIS;
         this._meshHeightMs = MILLIS * (40 / 60);
         if (zoom < 10) {
         } else if (zoom < 14) {
             // 2次メッシュ
+            this._meshLevel = 2;
             this._meshWidthMs = this._meshWidthMs / 8;
             this._meshHeightMs = this._meshHeightMs / 8;
         } else {
             // 3次メッシュ
+            this._meshLevel = 3;
             this._meshWidthMs = this._meshWidthMs / 8 / 10;
             this._meshHeightMs = this._meshHeightMs / 8 / 10;
         }
@@ -82,27 +85,11 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         };
     },
 
-    getLineCounts: function() {
-        var ne = this._bounds.getNorthEast();
-        var sw = this._bounds.getSouthWest();
-        var widthMs = Math.sqrt(Math.pow(ne.lng - sw.lng, 2)) * MILLIS;
-        var heightMs = Math.sqrt(Math.pow(ne.lat - sw.lat, 2)) * MILLIS;
-        return {
-            x: Math.ceil(widthMs / this._meshWidthMs),
-            y: Math.ceil(heightMs / this._meshHeightMs)
-        };
-    },
-
     constructLines: function(bounds) {
-      var width = this._meshWidthMs;
-      var height = this._meshHeightMs;
-
       var mins = this.getMins();
       var ne = this._bounds.getNorthEast();
 
-      var latlngs = [];
       var lines = new Array();
-      var labels = new Array();
 
       // for vertical lines
       var bottom = this._bounds.getSouth();
@@ -110,7 +97,6 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       var x = mins.x;
       do {
         var lng = x / MILLIS;
-        //latlngs.push([[bottom, lng], [top, lng]]);
         var line = L.polyline([[bottom, lng], [top, lng]], this.lineStyle);
         lines.push(line);
         x += this._meshWidthMs;
@@ -122,15 +108,75 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       var y = mins.y;
       do {
         var lat = y / MILLIS;
-        latlngs.push([[lat, left], [lat, right]]);
         var line = L.polyline([[lat, left], [lat, right]], this.lineStyle);
         lines.push(line);
-
         y += this._meshHeightMs;
       } while (y < ne.lat * MILLIS);
 
-      //L.polyline(latlngs, this.lineStyle).addTo(this._map);
+      var labels = this.buildMeshLabels(mins);
+
       lines.forEach(this.addLayer, this);
+      labels.forEach(this.addLayer, this);
+    },
+
+    buildMeshLabels: function(mins) {
+      var labels = [];
+      var ne = this._bounds.getNorthEast();
+      var x = mins.x;
+      do {
+        var lng = (x + 1) / MILLIS;
+        var y = mins.y;
+        do {
+          var lat = (y + 1) / MILLIS;
+          var mesh = this.meshcode1(lat, lng);
+          if (this._meshLevel >= 2) {
+            mesh = this.meshcode2(lat, lng, mesh);
+          }
+          if (this._meshLevel == 3) {
+            mesh = this.meshcode3(lat, lng, mesh);
+          }
+          var label = this.buildMeshLabel([lat, lng], mesh.code);
+          labels.push(label)
+          y += this._meshHeightMs;
+        } while (y < ne.lat * MILLIS);
+        x += this._meshWidthMs;
+      } while (x < ne.lng * MILLIS);
+      return labels;
+    }, 
+
+    meshcode1: function (lat, lng) {
+      let r = Math.round(Math.floor(lat * 1.5));
+      let c = Math.round(Math.floor(lng - 100.0));
+      let code = String(r) + String(c);
+      let latms = (r * MILLIS) / 1.5;
+      let lngms = (c + 100.0) * MILLIS;
+      return {code: code, latms: latms, lngms: lngms};
+    },
+
+    meshcode2: function (lat, lng, mesh1) {
+      let r = Math.floor((lat * MILLIS - mesh1.latms) / this._meshHeightMs);
+      let c = Math.floor((lng * MILLIS - mesh1.lngms) / this._meshWidthMs);
+      let code = mesh1.code + String(r) + String(c);
+      let latms = mesh1.latms + (r * this._meshHeightMs);
+      let lngms = mesh1.lngms + (c * this._meshWidthMs);
+      return {code: code, latms: latms, lngms: lngms};
+    },
+
+    meshcode3: function (lat, lng, mesh2) {
+      return this.meshcode2(lat, lng, mesh2);
+    },
+
+    buildMeshLabel: function(pos, label) {
+      return L.marker(pos, {
+        interactive: false,
+        clickable: false, //legacy support
+        icon: L.divIcon({
+          iconSize: [0, 0],
+          iconAnchor: [-10, 20],
+          className: 'leaflet-grid-label',
+          html: '<div style="'+ this.options.gridLetterStyle + '">' + label + '</div>'
+        })
+      });
     }
 });
 
