@@ -55,6 +55,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     },
 
     redraw: function() {
+        console.time('jisx0410mesh');
         this._bounds = this._map.getBounds().pad(0.5);
         this.clearLayers();
         var zoom = this._map.getZoom();
@@ -73,6 +74,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
             this._meshLevel = 3;
         }
         this.constructLines(this._bounds);
+        console.timeEnd('jisx0410mesh');
         return this;
     },
 
@@ -90,6 +92,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     constructLines: function(bounds) {
       var mins = this.getMins();
       var ne = this._bounds.getNorthEast();
+      var maxs = {x: ne.lng * MILLIS, y: ne.lat * MILLIS};
 
       var lines = new Array();
 
@@ -102,7 +105,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         var line = L.polyline([[bottom, lng], [top, lng]], this.lineStyle);
         lines.push(line);
         x += MESHWIDTH[this._meshLevel];
-      } while (x < ne.lng * MILLIS);
+      } while (x < maxs.x);
 
       // for horizontal lines
       var left = this._bounds.getWest();
@@ -113,37 +116,80 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         var line = L.polyline([[lat, left], [lat, right]], this.lineStyle);
         lines.push(line);
         y += MESHHEIGHT[this._meshLevel];
-      } while (y < ne.lat * MILLIS);
+      } while (y < maxs.y);
 
-      var labels = this.buildMeshLabels(mins);
+      var labels = this.buildMeshLabels(mins, maxs);
 
       lines.forEach(this.addLayer, this);
       labels.forEach(this.addLayer, this);
     },
 
-    buildMeshLabels: function(mins) {
+    buildMeshLabels: function(mins, maxs) {
       var labels = [];
-      var ne = this._bounds.getNorthEast();
-      var x = mins.x;
-      do {
-        var lng = (x + 1) / MILLIS;
-        var y = mins.y;
+      var self = this;
+      mesh1loop(mins.x, mins.y, maxs.x, maxs.y);
+      return labels;
+
+      function mesh1loop(x0, y0, xlimit, ylimit) {
+        var y = y0;
+        do { // 1次メッシュのループy
+          var lat = (y + 1) / MILLIS;
+          var x = x0;
+          do { // 1次メッシュのループx
+            var lng = (x + 1) / MILLIS;
+            var mesh1 = self.meshcode1(lat, lng);
+            if (self._meshLevel > 1) {
+              mesh2loop(mesh1);
+            } else {
+              labels.push(self.buildMeshLabel([lat, lng], mesh1.code));
+            }
+            x += MESHWIDTH[1];
+          } while (x < xlimit);
+          y += MESHHEIGHT[1];
+        } while (y < ylimit);
+      }
+
+      function mesh2loop(mesh1) {
+        var x0 = mesh1.lngms;
+        var y0 = mesh1.latms;
+        var xlimit = Math.min(x0 + MESHWIDTH[1], maxs.x);
+        var ylimit = Math.min(y0 + MESHHEIGHT[1], maxs.y);
+        var y = y0;
         do {
           var lat = (y + 1) / MILLIS;
-          var mesh = this.meshcode1(lat, lng);
-          if (this._meshLevel >= 2) {
-            mesh = this.meshcode2(lat, lng, mesh);
-          }
-          if (this._meshLevel == 3) {
-            mesh = this.meshcode3(lat, lng, mesh);
-          }
-          var label = this.buildMeshLabel([lat, lng], mesh.code);
-          labels.push(label)
-          y += MESHHEIGHT[this._meshLevel];
-        } while (y < ne.lat * MILLIS);
-        x += MESHWIDTH[this._meshLevel];
-      } while (x < ne.lng * MILLIS);
-      return labels;
+          var x = x0;
+          do {
+            var lng = (x + 1) / MILLIS;
+            var mesh2 = self.meshcode2(lat, lng, mesh1);
+            if (self._meshLevel > 2) {
+              mesh3loop(mesh2);
+            } else {
+              labels.push(self.buildMeshLabel([lat, lng], mesh2.code));
+            }
+            x += MESHWIDTH[2];
+          } while (x < xlimit);
+          y += MESHHEIGHT[2];
+        } while (y < ylimit);
+      }
+
+      function mesh3loop(mesh2) {
+        var x0 = mesh2.lngms;
+        var y0 = mesh2.latms;
+        var xlimit = Math.min(x0 + MESHWIDTH[2], maxs.x);
+        var ylimit = Math.min(y0 + MESHHEIGHT[2], maxs.y);
+        var y = y0;
+        do {
+          var lat = (y + 1) / MILLIS;
+          var x = x0;
+          do {
+            var lng = (x + 1) / MILLIS;
+            var mesh3 = self.meshcode3(lat, lng, mesh2);
+            labels.push(self.buildMeshLabel([lat, lng], mesh3.code));
+            x += MESHWIDTH[3];
+          } while (x < xlimit);
+          y += MESHHEIGHT[3];
+        } while (y < ylimit);
+      }
     }, 
 
     meshcode1: function (lat, lng) {
