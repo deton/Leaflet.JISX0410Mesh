@@ -1,5 +1,7 @@
 # Leaflet.JISX0410Mesh
-Add JIS X 0410 Mesh squares to your leaflet maps.
+
+JIS X 0410 地域メッシュを表示する、Leaflet plugin。
+第1次メッシュから、第3次メッシュまで対応(分割地域メッシュは未対応)。
 
 Usage
 -----
@@ -25,7 +27,7 @@ Usage
 Options
 -------
 - redraw: Default = 'move'. Sets when the grid is redrawn.
-- maxZoom: Default = 15. Limit the range that the grid is drawn.
+- maxZoom: Default = 18. Limit the range that the grid is drawn.
 - minZoom: Default = 6. Limit the range that the grid is drawn.
 - gridLetterStyle: Default = 'color: #216fff; font-size:12px;'. A css string to style the labels.
 

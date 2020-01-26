@@ -1,3 +1,4 @@
+(function () {
 const MILLIS = 3600000;
 const MESHWIDTH = [];
 MESHWIDTH[1] = MILLIS;
@@ -8,11 +9,14 @@ MESHHEIGHT[1] = MILLIS * (40 / 60);
 MESHHEIGHT[2] = MESHHEIGHT[1] / 8;
 MESHHEIGHT[3] = MESHHEIGHT[2] / 10;
 
+// JISX0410 domain of definition
+BOUNDS = L.latLngBounds([0, 100], [66.66, 180]);
+
 L.JISX0410Mesh = L.LayerGroup.extend({
     options: {
         showLabels: true,
         redraw: 'move',
-        maxZoom: 15,
+        maxZoom: 18,
         minZoom: 6,
         gridLetterStyle: "color: #216fff; font-size:12px;",
     },
@@ -55,13 +59,18 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     },
 
     redraw: function() {
-        this._bounds = this._map.getBounds().pad(0.5);
+        this._bounds = this._map.getBounds();
         this.clearLayers();
         var zoom = this._map.getZoom();
         if (zoom < this.options.minZoom || zoom > this.options.maxZoom) {
             return this;
         }
-        var zoom = this._map.getZoom();
+        if (!BOUNDS.contains(this._bounds)) {
+          return this;
+        }
+        //if (this._bounds.getSouth() < 0 || this._bounds.getNorth() >= 66.66 || this._bounds.getWest() < 100 || this._bounds.getEast() >= 180) {
+        //  return this;
+        //}
         // 1次メッシュ
         if (zoom < 10) {
             this._meshLevel = 1;
@@ -190,3 +199,4 @@ L.JISX0410Mesh = L.LayerGroup.extend({
 L.jisx0410Mesh = function(options) {
     return new L.JISX0410Mesh(options);
 };
+})();
