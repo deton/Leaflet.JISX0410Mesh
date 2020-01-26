@@ -3,13 +3,15 @@
 JIS X 0410 地域メッシュを表示する、Leaflet plugin。
 第1次メッシュから、第3次メッシュまで対応(分割地域メッシュは未対応)。
 
+https://deton.github.io/Leaflet.JISX0410Mesh/demo.html
+
 Usage
 -----
 
 ```JavaScript
 
     var map = L.map('map',{
-      center: [35.840, 137.593],
+      center: [35.66566, 139.7509],
       zoom: 9,
     });
 
