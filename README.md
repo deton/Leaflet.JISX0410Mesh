@@ -32,6 +32,13 @@ Options
 - gridLetterStyle: Default = 'color: #216fff; font-size:12px;'. A css string to style the labels.
 
 
-Code inspiration from
-* https://github.com/jonshutt/Leaflet.OS.Graticule
+Code inspiration from https://github.com/jonshutt/Leaflet.OS.Graticule
+
+See also
+--------
 * https://github.com/MALORGIS/jisX0410
+  指定した範囲の地域メッシュのGeoJSON作成等。
+* http://maps.gsi.go.jp/?ll=35.665664,139.7509&z=10&base=std&ls=chiikimesh&disp=1&vs=c1j0l0u0&d=v
+  地理院地図で地域メッシュ表示。VectorTileを使用している模様。
+* http://www.geosense.co.jp/map/tool/geoconverter.php?cmd=meshcode
+  メッシュコードで検索
