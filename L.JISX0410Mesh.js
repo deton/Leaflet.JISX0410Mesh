@@ -156,16 +156,21 @@ L.JISX0410Mesh = L.LayerGroup.extend({
     },
 
     meshcode2: function (lat, lng, mesh1) {
-      let r = Math.floor((lat * MILLIS - mesh1.latms) / MESHHEIGHT[this._meshLevel]);
-      let c = Math.floor((lng * MILLIS - mesh1.lngms) / MESHWIDTH[this._meshLevel]);
+      let r = Math.floor((lat * MILLIS - mesh1.latms) / MESHHEIGHT[2]);
+      let c = Math.floor((lng * MILLIS - mesh1.lngms) / MESHWIDTH[2]);
       let code = mesh1.code + String(r) + String(c);
-      let latms = mesh1.latms + (r * MESHHEIGHT[this._meshLevel]);
-      let lngms = mesh1.lngms + (c * MESHWIDTH[this._meshLevel]);
+      let latms = mesh1.latms + (r * MESHHEIGHT[2]);
+      let lngms = mesh1.lngms + (c * MESHWIDTH[2]);
       return {code: code, latms: latms, lngms: lngms};
     },
 
     meshcode3: function (lat, lng, mesh2) {
-      return this.meshcode2(lat, lng, mesh2);
+      let r = Math.floor((lat * MILLIS - mesh2.latms) / MESHHEIGHT[3]);
+      let c = Math.floor((lng * MILLIS - mesh2.lngms) / MESHWIDTH[3]);
+      let code = mesh2.code + String(r) + String(c);
+      let latms = mesh2.latms + (r * MESHHEIGHT[3]);
+      let lngms = mesh2.lngms + (c * MESHWIDTH[3]);
+      return {code: code, latms: latms, lngms: lngms};
     },
 
     buildMeshLabel: function(pos, label) {
