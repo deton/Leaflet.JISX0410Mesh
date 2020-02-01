@@ -14,10 +14,11 @@ BOUNDS = L.latLngBounds([0, 100], [66.66, 180]);
 
 L.JISX0410Mesh = L.LayerGroup.extend({
     options: {
-        showLabels: true,
         redraw: 'move',
         maxZoom: 18,
         minZoom: 6,
+        minZoom2: 10, // minZoom for mesh2
+        minZoom3: 14,
         gridLetterStyle: "color: #216fff; font-size:12px;",
     },
 
@@ -68,13 +69,10 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         if (!BOUNDS.contains(this._bounds)) {
           return this;
         }
-        //if (this._bounds.getSouth() < 0 || this._bounds.getNorth() >= 66.66 || this._bounds.getWest() < 100 || this._bounds.getEast() >= 180) {
-        //  return this;
-        //}
         // 1次メッシュ
-        if (zoom < 10) {
+        if (zoom < this.options.minZoom2) {
             this._meshLevel = 1;
-        } else if (zoom < 14) {
+        } else if (zoom < this.options.minZoom3) {
             // 2次メッシュ
             this._meshLevel = 2;
         } else {

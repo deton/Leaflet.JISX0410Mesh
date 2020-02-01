@@ -19,7 +19,7 @@ Usage
       attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
     }).addTo(map);
 
-    var options = {      
+    var options = {
     };
 
     L.jisx0410Mesh(options).addTo(map);
@@ -31,7 +31,15 @@ Options
 - redraw: Default = 'move'. Sets when the grid is redrawn.
 - maxZoom: Default = 18. Limit the range that the grid is drawn.
 - minZoom: Default = 6. Limit the range that the grid is drawn.
+- minZoom2: Default = 10. 2次メッシュを表示する最小zoom値。
+  これ未満のときは1次メッシュを表示。
+- minZoom3: Default = 14. 3次メッシュを表示する最小zoom値。
 - gridLetterStyle: Default = 'color: #216fff; font-size:12px;'. A css string to style the labels.
+
+表示するメッシュ:
+* 1次メッシュ: minZoom (デフォルト6) <= zoom < minZoom2 (10)
+* 2次メッシュ: minZoom2 (10) <= zoom < minZoom3 (14)
+* 3次メッシュ: minZoom3 (14) <= zoom <= maxZoom (18)
 
 
 Code inspiration from https://github.com/jonshutt/Leaflet.OS.Graticule

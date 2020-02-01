@@ -30,7 +30,11 @@
           attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
         }).addTo(map);
 
-	L.jisx0410Mesh().addTo(map);
+	var options = {
+	    minZoom3: 13
+	};
+
+	L.jisx0410Mesh(options).addTo(map);
 
 	</script>
 </body>
