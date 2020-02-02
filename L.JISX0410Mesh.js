@@ -175,9 +175,9 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       let r = Math.floor((lat * MILLIS - mesh2.latms) / MESHHEIGHT[3]);
       let c = Math.floor((lng * MILLIS - mesh2.lngms) / MESHWIDTH[3]);
       let code = mesh2.code + String(r) + String(c);
-      let latms = mesh2.latms + (r * MESHHEIGHT[3]);
-      let lngms = mesh2.lngms + (c * MESHWIDTH[3]);
-      return {code: code, latms: latms, lngms: lngms};
+      //let latms = mesh2.latms + (r * MESHHEIGHT[3]);
+      //let lngms = mesh2.lngms + (c * MESHWIDTH[3]);
+      return {code: code} //, latms: latms, lngms: lngms};
     },
 
     buildMeshLabel: function(pos, label) {
