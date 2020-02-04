@@ -19,7 +19,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         minZoom: 6,
         minZoom2: 10, // minZoom for mesh2
         minZoom3: 14,
-        gridLetterStyle: "color: #216fff; font-size:12px;"
+        gridLetterStyle: "color: #216fff; font-size:12px;",
     },
 
     lineStyle: {
@@ -144,12 +144,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
           if (this._meshLevel == 3) {
             mesh = this.meshcode3(lat, lng, mesh);
           }
-          // lat,lngはメッシュ内の左下端。
-          // ラベルは指定緯度経度の右下に表示される
-          // (iconAnchor指定でずらせるが、ラベル文字サイズに合わせる必要あり)
-          // ので、メッシュ内の左上端のlabellat,lngを指定
-          var labellat = lat + MESHHEIGHT[this._meshLevel] / MILLIS;
-          var label = this.buildMeshLabel([labellat, lng], mesh.code);
+          var label = this.buildMeshLabel([lat, lng], mesh.code);
           labels.push(label)
           y += MESHHEIGHT[this._meshLevel];
         } while (y < ne.lat * MILLIS);
@@ -191,7 +186,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         clickable: false, //legacy support
         icon: L.divIcon({
           iconSize: [0, 0],
-          iconAnchor: [-2, 0],
+          iconAnchor: [-10, 20],
           className: 'leaflet-grid-label',
           html: '<div style="'+ this.options.gridLetterStyle + '">' + label + '</div>'
         })
