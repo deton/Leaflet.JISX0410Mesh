@@ -19,7 +19,8 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         minZoom: 6,
         minZoom2: 10, // minZoom for mesh2
         minZoom3: 14,
-        gridLetterStyle: "color: #216fff; font-size:12px;",
+        labelStyle: "color: #216fff; font-size:12px;",
+        labelAnchor: [-2, 16]
     },
 
     lineStyle: {
@@ -186,9 +187,9 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         clickable: false, //legacy support
         icon: L.divIcon({
           iconSize: [0, 0],
-          iconAnchor: [-10, 20],
+          iconAnchor: this.options.labelAnchor,
           className: 'leaflet-grid-label',
-          html: '<div style="'+ this.options.gridLetterStyle + '">' + label + '</div>'
+          html: '<div style="'+ this.options.labelStyle + '">' + label + '</div>'
         })
       });
     }
