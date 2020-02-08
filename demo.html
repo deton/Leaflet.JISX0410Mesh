@@ -21,20 +21,36 @@
 
 	<script type="text/javascript">
 
-    var map = L.map('map',{
-  		center: [35.66566, 139.7509],
-  		zoom: 9,
-  	});
-
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
-          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
-        }).addTo(map);
+	var gsiblank = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
+	  attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+	});
+	var gsi = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+	  attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+	})
+	var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
+	var baseLayers = {
+	  '地理院タイル(白地図)': gsiblank,
+	  '地理院タイル': gsi,
+	  'OpenStreetMap': osm
+	};
 
 	var options = {
 	    minZoom3: 13
 	};
+	var jisx0410mesh = L.jisx0410Mesh(options);
+	var overlays = {
+	  '地域メッシュ': jisx0410mesh
+	};
 
-	L.jisx0410Mesh(options).addTo(map);
+	var map = L.map('map',{
+	  center: [35.66566, 139.7509],
+	  zoom: 9,
+	  layers: [gsiblank, jisx0410mesh]
+	});
+
+	L.control.layers(baseLayers, overlays, {collapsed: false}).addTo(map);
 
 	</script>
 </body>
