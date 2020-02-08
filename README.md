@@ -51,7 +51,7 @@ See also
 --------
 * https://github.com/MALORGIS/jisX0410
   指定した範囲の地域メッシュのGeoJSON作成等。
-* http://maps.gsi.go.jp/?ll=35.665664,139.7509&z=10&base=std&ls=chiikimesh&disp=1&vs=c1j0l0u0&d=v
-  地理院地図で地域メッシュ表示。VectorTileを使用している模様。
+* http://maps.gsi.go.jp/#9/35.665664/139.750900/&base=blank&ls=blank%7Cchiikimesh&disp=11&lcd=blank&vs=c1j0h0k0l0u0t0z0r0s0m0f1&d=v
+  地理院地図サイトでの地域メッシュ表示。VectorTileを使用している模様。
 * http://www.geosense.co.jp/map/tool/geoconverter.php?cmd=meshcode
   メッシュコードで検索
