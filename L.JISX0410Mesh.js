@@ -10,7 +10,7 @@ MESHHEIGHT[2] = MESHHEIGHT[1] / 8;
 MESHHEIGHT[3] = MESHHEIGHT[2] / 10;
 
 // JISX0410 domain of definition
-BOUNDS = L.latLngBounds([0, 100], [66.66, 180]);
+const BOUNDS = L.latLngBounds([0, 100], [66.66, 180]);
 
 L.JISX0410Mesh = L.LayerGroup.extend({
     options: {
@@ -152,31 +152,31 @@ L.JISX0410Mesh = L.LayerGroup.extend({
 
     meshcode: function (lat, lng, meshLevel) {
       // 1次メッシュコード
-      let r1 = Math.round(Math.floor(lat * 1.5));
-      let c1 = Math.round(Math.floor(lng - 100.0));
-      let code1 = String(r1) + String(c1);
+      var r1 = Math.round(Math.floor(lat * 1.5));
+      var c1 = Math.round(Math.floor(lng - 100.0));
+      var code1 = String(r1) + String(c1);
       if (meshLevel <= 1) {
         return code1;
       }
-      let mesh1latms = (r1 * MILLIS) / 1.5;
-      let mesh1lngms = (c1 + 100.0) * MILLIS;
+      var mesh1latms = (r1 * MILLIS) / 1.5;
+      var mesh1lngms = (c1 + 100.0) * MILLIS;
 
       // 2次メッシュコード
-      let latms = lat * MILLIS;
-      let lngms = lng * MILLIS;
-      let r2 = Math.floor((latms - mesh1latms) / MESHHEIGHT[2]);
-      let c2 = Math.floor((lngms - mesh1lngms) / MESHWIDTH[2]);
-      let code2 = code1 + String(r2) + String(c2);
+      var latms = lat * MILLIS;
+      var lngms = lng * MILLIS;
+      var r2 = Math.floor((latms - mesh1latms) / MESHHEIGHT[2]);
+      var c2 = Math.floor((lngms - mesh1lngms) / MESHWIDTH[2]);
+      var code2 = code1 + String(r2) + String(c2);
       if (meshLevel == 2) {
         return code2;
       }
-      let mesh2latms = mesh1latms + (r2 * MESHHEIGHT[2]);
-      let mesh2lngms = mesh1lngms + (c2 * MESHWIDTH[2]);
+      var mesh2latms = mesh1latms + (r2 * MESHHEIGHT[2]);
+      var mesh2lngms = mesh1lngms + (c2 * MESHWIDTH[2]);
 
       // 3次メッシュコード
-      let r3 = Math.floor((latms - mesh2latms) / MESHHEIGHT[3]);
-      let c3 = Math.floor((lngms - mesh2lngms) / MESHWIDTH[3]);
-      let code3 = code2 + String(r3) + String(c3);
+      var r3 = Math.floor((latms - mesh2latms) / MESHHEIGHT[3]);
+      var c3 = Math.floor((lngms - mesh2lngms) / MESHWIDTH[3]);
+      var code3 = code2 + String(r3) + String(c3);
       return code3;
     },
 
