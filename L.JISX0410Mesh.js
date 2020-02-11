@@ -19,7 +19,8 @@ L.JISX0410Mesh = L.LayerGroup.extend({
         minZoom: 6,
         minZoom2: 10, // minZoom for mesh2
         minZoom3: 14,
-        labelStyle: "color: #216fff; font-size:12px;",
+        labelFormat: 0, // 0: '53393690', 1: '5339-3690', 2: '5339-36-90'
+        labelStyle: "color: #216fff; font-size: 12px; white-space: nowrap;",
         labelAnchor: [-2, 16]
     },
 
@@ -166,7 +167,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       var lngms = lng * MILLIS;
       var r2 = Math.floor((latms - mesh1latms) / MESHHEIGHT[2]);
       var c2 = Math.floor((lngms - mesh1lngms) / MESHWIDTH[2]);
-      var code2 = code1 + String(r2) + String(c2);
+      var code2 = code1 + (this.options.labelFormat >=1 ? '-' : '') + String(r2) + String(c2);
       if (meshLevel == 2) {
         return code2;
       }
@@ -176,7 +177,7 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       // 3次メッシュコード
       var r3 = Math.floor((latms - mesh2latms) / MESHHEIGHT[3]);
       var c3 = Math.floor((lngms - mesh2lngms) / MESHWIDTH[3]);
-      var code3 = code2 + String(r3) + String(c3);
+      var code3 = code2 + (this.options.labelFormat >=2 ? '-' : '') + String(r3) + String(c3);
       return code3;
     },
 

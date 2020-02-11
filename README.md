@@ -1,7 +1,8 @@
 # Leaflet.JISX0410Mesh
 
 JIS X 0410 地域メッシュを表示する、Leaflet plugin。
-第1次メッシュから、第3次メッシュまで対応(分割地域メッシュは未対応)。
+ズームレベルに応じて、第1次メッシュから、第3次メッシュまでを切り替えて表示
+(分割地域メッシュは未対応)。
 
 Demo
 ----
@@ -36,8 +37,13 @@ Options
 - minZoom2: Default = `10`. 2次メッシュを表示する最小zoom値。
   これ未満のときは1次メッシュを表示。
 - minZoom3: Default = `14`. 3次メッシュを表示する最小zoom値。
-- labelStyle: Default = `'color: #216fff; font-size:12px;'`. A css string to style the labels.
-- labelAnchor: Default = `[-2, 16]`. ラベル(地域メッシュコード)の表示位置調整。labelStyleのfont-sizeを12より大きくするときは、16よりも大きくする必要あり。
+- labelFormat: Default = `0`. ラベル(地域メッシュコード)の表示形式。
+  例:
+  - `0`: '53393690'
+  - `1`: '5339-3690'
+  - `2`: '5339-36-90'
+- labelStyle: Default = `'color: #216fff; font-size: 12px; white-space: nowrap;'`. A css string to style the labels.
+- labelAnchor: Default = `[-2, 16]`. ラベルの表示位置調整。labelStyleのfont-sizeを12より大きくするときは、16よりも大きくする必要あり。
 
 表示するメッシュ:
 * 1次メッシュ: minZoom (デフォルト6) <= zoom < minZoom2 (10)
