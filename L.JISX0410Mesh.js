@@ -192,6 +192,31 @@ L.JISX0410Mesh = L.LayerGroup.extend({
           html: '<div style="'+ this.options.labelStyle + '">' + label + '</div>'
         })
       });
+    },
+
+    meshcode2latlng: function (meshcode) {
+      meshcode = String(meshcode).replace(/-/g, '');
+      var r = parseInt(meshcode.substring(0, 2), 10);
+      var c = parseInt(meshcode.substring(2, 4), 10);
+      var lat1 = r / 1.5;
+      var lng1 = c + 100;
+      if (meshcode.length == 4) { // 1次メッシュ
+        return L.latLng(lat1, lng1);
+      }
+      r = parseInt(meshcode.substring(4, 5), 10);
+      c = parseInt(meshcode.substring(5, 6), 10);
+      var lat2 = lat1 + MESHHEIGHT[2] * r / MILLIS;
+      var lng2 = lng1 + MESHWIDTH[2] * c / MILLIS;
+      if (meshcode.length == 6) { // 2次メッシュ
+        return L.latLng(lat2, lng2);
+      }
+      r = parseInt(meshcode.substring(6, 7), 10);
+      c = parseInt(meshcode.substring(7, 8), 10);
+      var lat3 = lat2 + MESHHEIGHT[3] * r / MILLIS;
+      var lng3 = lng2 + MESHWIDTH[3] * c / MILLIS;
+      if (meshcode.length == 8) { // 3次メッシュ
+        return L.latLng(lat3, lng3);
+      }
     }
 });
 
