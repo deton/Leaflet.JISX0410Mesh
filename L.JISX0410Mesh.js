@@ -41,24 +41,16 @@ L.JISX0410Mesh = L.LayerGroup.extend({
 
     onAdd: function(map) {
         this._map = map;
-        var graticule = this.redraw();
-        this._map.on('viewreset ' + this.options.redraw, graticule.redraw, graticule);
+        this.redraw();
+        map.on('viewreset ' + this.options.redraw, this.redraw, this);
         this.eachLayer(map.addLayer, map);
+        return this;
     },
 
     onRemove: function(map) {
-        map.off('viewreset '+ this.options.redraw, this.map);
-        this.eachLayer(this.removeLayer, this);
-    },
-
-    hide: function() {
-        this.options.hidden = true;
-        this.redraw();
-    },
-
-    show: function() {
-        this.options.hidden = false;
-        this.redraw();
+        map.off('viewreset '+ this.options.redraw, this.redraw, this);
+        this.eachLayer(map.removeLayer, map);
+        return this;
     },
 
     redraw: function() {
