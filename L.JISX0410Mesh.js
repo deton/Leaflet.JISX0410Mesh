@@ -285,7 +285,8 @@ L.JISX0410Mesh = L.LayerGroup.extend({
       }
 
       function div4code_to_rowcol(div4code) {
-        switch (n) {
+        var r, c;
+        switch (div4code) {
           case 1: r = 0; c = 0; break;
           case 2: r = 0; c = 1; break;
           case 3: r = 1; c = 0; break;
