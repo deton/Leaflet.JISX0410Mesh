@@ -1,8 +1,7 @@
 # Leaflet.JISX0410Mesh
 
 JIS X 0410 地域メッシュを表示する、Leaflet plugin。
-ズームレベルに応じて、第1次メッシュから、第3次メッシュまでを切り替えて表示
-(分割地域メッシュは未対応)。
+ズームレベルに応じて、1次メッシュ(約80km四方)から6次メッシュ(約125m四方)までを切り替えて表示。
 
 Demo
 ----
@@ -37,6 +36,9 @@ Options
 - minZoom2: Default = `10`. 2次メッシュを表示する最小zoom値。
   これ未満のときは1次メッシュを表示。
 - minZoom3: Default = `14`. 3次メッシュを表示する最小zoom値。
+- minZoom4: Default = `16`. 4次メッシュを表示する最小zoom値。
+- minZoom5: Default = `17`. 5次メッシュを表示する最小zoom値。
+- minZoom6: Default = `18`. 6次メッシュを表示する最小zoom値。
 - labelFormat: Default = `0`. ラベル(地域メッシュコード)の表示形式。
   例:
   - `0`: '53393690'
@@ -46,9 +48,12 @@ Options
 - labelAnchor: Default = `[-2, 16]`. ラベルの表示位置調整。labelStyleのfont-sizeを12より大きくするときは、16よりも大きくする必要あり。
 
 表示するメッシュ:
-* 1次メッシュ: minZoom (デフォルト6) <= zoom < minZoom2 (10)
-* 2次メッシュ: minZoom2 (10) <= zoom < minZoom3 (14)
-* 3次メッシュ: minZoom3 (14) <= zoom <= maxZoom (18)
+* 1次メッシュ(80km): minZoom (デフォルト6) <= zoom < minZoom2 (10)
+* 2次メッシュ(10km): minZoom2 (10) <= zoom < minZoom3 (14)
+* 3次メッシュ( 1km): minZoom3 (14) <= zoom < minZoom4 (16)
+* 4次メッシュ(500m): minZoom4 (16) <= zoom < minZoom5 (17)
+* 5次メッシュ(250m): minZoom5 (17) <= zoom < minZoom6 (18)
+* 6次メッシュ(125m): minZoom6 (18) <= zoom <= maxZoom (18)
 
 
 Code inspiration from https://github.com/jonshutt/Leaflet.OS.Graticule
